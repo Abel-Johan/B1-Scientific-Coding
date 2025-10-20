@@ -105,10 +105,12 @@ class ClosedLoop:
             if t == 0:
                 observation_prev = observation_t
                 reference_prev = reference_t
+            else:
+                observation_prev = positions[t-1][1]
             # Call your controller here
-            actions[t] = self.controller(reference_t, observation_t, reference_prev, observation_prev, Kp=0.15, Kd=0.6)
+            actions[t] = self.controller(reference_t, observation_t, reference_prev, observation_prev, Kp=0.15, Kd=0.5)
+            reference_prev = reference_t
             self.plant.transition(actions[t], disturbances[t])
-
         return Trajectory(positions)
         
     def simulate_with_random_disturbances(self, mission: Mission, variance: float = 0.5) -> Trajectory:
