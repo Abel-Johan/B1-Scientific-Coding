@@ -88,7 +88,7 @@ class ClosedLoop:
         self.plant = plant
         self.controller = controller
         self.proportional_gain = 0.15
-        self.derivative_gain = 0.7
+        self.derivative_gain = 0.7      # Modified derivative gain for better performance
 
     def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
 
@@ -105,13 +105,14 @@ class ClosedLoop:
             observation_t = self.plant.get_depth()
             reference_t = mission.reference[t]
             if t == 0:
-                observation_prev = observation_t
-                reference_prev = reference_t
+                observation_prev = observation_t    # Use current observation for previous at t=0
+                reference_prev = reference_t        # Use current reference for previous at t=0
+                                                    # to avoid undefined behaviour
             else:
                 observation_prev = positions[t-1][1]
             # Call your controller here
             actions[t] = self.controller(reference_t, observation_t, reference_prev, observation_prev, Kp=self.proportional_gain, Kd=self.derivative_gain)
-            reference_prev = reference_t
+            reference_prev = reference_t            # Update previous reference
             self.plant.transition(actions[t], disturbances[t])
         return Trajectory(positions)
         

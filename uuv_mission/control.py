@@ -4,6 +4,5 @@ def controller(reference: float, depth: float, reference_prev: float, depth_prev
     error = reference - depth
     error_prev = reference_prev - depth_prev
     derivative = error - error_prev
-    control_signal = Kp * error + Kd * derivative
+    control_signal = Kp * error + Kd * derivative   # Main PD controller formula
     return control_signal
-    
